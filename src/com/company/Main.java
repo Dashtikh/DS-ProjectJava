@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
 
         int menu;
-        int id = 0,id1=0,id2=0,relation=0;
+        int id = 0, id1 = 0, id2 = 0, relation = 0;
         String fName;
         String lName;
         boolean sex;
@@ -47,8 +47,8 @@ public class Main {
                     System.out.println("insert the spouse id");
                     spouseId = scanner7.nextInt();
                     adder(id, fName, lName, sex, bDate, dDate, spouseId);
-                    if (spouseId!=0){
-                        relation(id,spouseId,2);
+                    if (spouseId != 0) {
+                        relation(id, spouseId, 2);
                     }
                     break;
                 case 2:
@@ -56,21 +56,32 @@ public class Main {
                     printList();
                     break;
                 case 3:
-                   //set relation
+                    //set relation
                     System.out.println("set father-son relation ( 1=p1 is son of p2)");
                     Scanner scanner8 = new Scanner(System.in);
                     Scanner scanner9 = new Scanner(System.in);
                     Scanner scanner10 = new Scanner(System.in);
-                    id1=scanner8.nextInt();
-                    id2=scanner9.nextInt();
-                    relation=scanner10.nextInt();
-                    relation(id1,id2,relation);
+                    id1 = scanner8.nextInt();
+                    id2 = scanner9.nextInt();
+                    relation = scanner10.nextInt();
+                    relation(id1, id2, relation);
 
                     break;
                 case 4:
                     printEdgeList();
                     break;
+                case 5:
+                    System.out.println("search for child numbers");
+                    int[] a= new int[id+1];
+                    int[] b= new int[id+1];
+                    int swap;
 
+                    for (int i = 1; i <= id; i++) {
+
+                        System.out.println("id " + i + " has " + searchForChildren(i) + " child");
+
+                    }
+                    break;
 
 
                 default:
@@ -79,6 +90,19 @@ public class Main {
 
 
         }
+    }
+
+    public static int searchForChildren(int id) {
+        int counter = 0;
+        for (Edges edges : edgesArrayList) {
+            if (edges.getToId() == id && edges.getRelation() == 1) {
+                counter++;
+                counter=counter+searchForChildren(edges.getFromId());
+            }
+
+        }
+
+        return counter;
     }
 
 
@@ -97,12 +121,13 @@ public class Main {
         }
 
     }
+
     public static void printEdgeList() {
         for (Edges print : edgesArrayList) {
-            if (print.getRelation()==2) {
+            if (print.getRelation() == 2) {
                 System.out.println(print.getToId() + " is wife of" + print.getFromId());
             }
-            if (print.getRelation()==1) {
+            if (print.getRelation() == 1) {
                 System.out.println(print.getFromId() + " is son of" + print.getToId());
             }
         }
