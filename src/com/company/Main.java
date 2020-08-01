@@ -66,7 +66,7 @@ public class Main {
         }
         resultSet1.close();
         while (true) {
-            System.out.println("insert menu item: 1 add person , 2 print persons , 3 set relation , 4 print relation , 5 the most children");
+            System.out.println("insert menu item: 1 add person , 2 print persons , 3 set relation , 4 print relation , 5 the most children , 6 finding by relation ");
             menu = scanner.nextInt();
             switch (menu) {
                 case 1:
@@ -113,7 +113,7 @@ public class Main {
                     break;
                 case 3:
                     //set relation
-                    System.out.println("set father-son relation ( 1=p1 is son of p2)");
+                    System.out.println("set father-son relation ( 1=p1 is child of p2)");
                     Scanner scanner8 = new Scanner(System.in);
                     Scanner scanner9 = new Scanner(System.in);
                     Scanner scanner10 = new Scanner(System.in);
@@ -149,14 +149,14 @@ public class Main {
                     }
                     for (k = 1; k <= id3; k++) {
                         if (a[k] == b[id]) {
-                            System.out.println("id " + k + " has the most child with " + a[k] + " child");
+                            System.out.println("id " + k + " has the most child with " + a[k] + " children");
                         }
                     }
 
                     break;
                 case 6:
                     Scanner scanner11 = new Scanner(System.in);
-                    System.out.println("choose the relation that you wanna find id : 1-father 2-mother");
+                    System.out.println("choose the relation that you wanna find id : 1-father 2-mother 3-amoo 4-amme");
                     finder = scanner11.nextInt();
                     Scanner scanner12 = new Scanner(System.in);
                     switch (finder) {
