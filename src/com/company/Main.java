@@ -1,5 +1,8 @@
 package com.company;
 
+import oracle.jdbc.proxy.annotation.Pre;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,10 +12,24 @@ public class Main {
     static ArrayList<Edges> edgesArrayList = new ArrayList<Edges>();
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
+        Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
+        Connection connection1 =DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
+        Connection conn1 =DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
+        PreparedStatement preparedStatement = connection.prepareStatement("insert into person (Id , fname , lName , SEX , bDate , dDate , spouseId) values (?,?,?,?,?,?,?)");
+        PreparedStatement preparedStatement1 = connection1.prepareStatement("insert into Edges (fromid , toid , relation) values (?,?,?)");
+        Statement statement= conn.createStatement();
+        Statement statement1 = conn1.createStatement();
 
         int menu;
-        int id = 0, id1 = 0, id2 = 0, relation = 0;
+        int id = 0, id1 = 0, id2 = 0, relation = 0,id3=0;
         String fName;
         String lName;
         boolean sex;
@@ -20,6 +37,32 @@ public class Main {
         int dDate;
         int spouseId;
         Scanner scanner = new Scanner(System.in);
+        String sql = "SELECT ID , FNAME  , LNAME , SEX , BDATE , DDATE , SPOUSEID FROM person";
+        String sql1 = "SELECT fromid , toid  , relation FROM edges";
+        ResultSet resultSet = statement.executeQuery(sql);
+        ResultSet resultSet1 = statement1.executeQuery(sql1);
+        while (resultSet.next()) {
+            id = resultSet.getInt("ID");
+            id3++;
+            fName = resultSet.getString("FNAME");
+            lName = resultSet.getString("LNAME");
+            if (resultSet.getInt("SEX") == 1)
+                sex = true;
+            else sex = false;
+            bDate = resultSet.getInt("BDATE");
+            dDate = resultSet.getInt("DDATE");
+            spouseId = resultSet.getInt("SPOUSEID");
+            adder(id, fName, lName, sex, bDate, dDate, spouseId);
+        }
+        resultSet.close();
+        while (resultSet1.next()){
+            id1=resultSet1.getInt("FROMID");
+            id2=resultSet1.getInt("TOID");
+            relation=resultSet1.getInt("RELATION");
+            relation(id1,id2,relation);
+
+        }
+        resultSet1.close();
         while (true) {
             System.out.println("insert menu item: 1 add person , 2 print persons , 3 set relation , 4 print relation , 5 the most children");
             menu = scanner.nextInt();
@@ -32,23 +75,34 @@ public class Main {
                     Scanner scanner5 = new Scanner(System.in);
                     Scanner scanner6 = new Scanner(System.in);
                     Scanner scanner7 = new Scanner(System.in);
-                    id++;
-                    System.out.println("the id is=" + id);
+                    id3++;
+                    System.out.println("the id is=" + id3);
+                    preparedStatement.setLong(1, id3);
                     System.out.println("insert the firstname");
                     fName = scanner2.nextLine();
+                    preparedStatement.setString(2, fName);
                     System.out.println("insert the lastname");
                     lName = scanner3.nextLine();
+                    preparedStatement.setString(3, lName);
                     System.out.println("insert the gender by true=male & false=female");
                     sex = scanner4.nextBoolean();
+                    if (sex == true) {
+                        preparedStatement.setLong(4, 1);
+                    } else preparedStatement.setLong(4, 0);
                     System.out.println("insert the birth date ");
                     bDate = scanner5.nextInt();
+                    preparedStatement.setLong(5, bDate);
                     System.out.println("insert the death date");
                     dDate = scanner6.nextInt();
+                    preparedStatement.setLong(6, dDate);
                     System.out.println("insert the spouse id");
                     spouseId = scanner7.nextInt();
-                    adder(id, fName, lName, sex, bDate, dDate, spouseId);
+                    preparedStatement.setLong(7, spouseId);
+                    preparedStatement.executeUpdate();
+
+                    adder(id3, fName, lName, sex, bDate, dDate, spouseId);
                     if (spouseId != 0) {
-                        relation(id, spouseId, 2);
+                        relation(id3, spouseId, 2);
                     }
                     break;
                 case 2:
@@ -62,10 +116,14 @@ public class Main {
                     Scanner scanner9 = new Scanner(System.in);
                     Scanner scanner10 = new Scanner(System.in);
                     id1 = scanner8.nextInt();
+                    preparedStatement1.setLong(1,id1);
                     id2 = scanner9.nextInt();
+                    preparedStatement1.setLong(2,id2);
                     relation = scanner10.nextInt();
-                    relation(id1, id2, relation);
+                    preparedStatement1.setLong(3,relation);
 
+                    relation(id1, id2, relation);
+                    preparedStatement1.executeUpdate();
                     break;
                 case 4:
                     printEdgeList();
@@ -74,22 +132,22 @@ public class Main {
                     System.out.println("search for child numbers");
                     int[] a = new int[id + 1];
                     int[] b = new int[id + 1];
-                    int swap, j,k;
+                    int swap, j, k;
 
-                    for (int i = 1; i <= id; i++) {
+                    for (int i = 1; i <= id3; i++) {
                         a[i] = searchForChildren(i);
                         b[i] = searchForChildren(i);
                     }
-                    for (j = 1; j < id; j++) {
+                    for (j = 1; j < id3; j++) {
                         if (b[j] > b[j + 1]) {
                             swap = b[j + 1];
                             b[j + 1] = b[j];
                             b[j] = swap;
                         }
                     }
-                    for (k=1;k<=id;k++){
-                        if (a[k]==b[id]){
-                            System.out.println("id "+k+" has the most child with "+a[k]+" child");
+                    for (k = 1; k <= id3; k++) {
+                        if (a[k] == b[id]) {
+                            System.out.println("id " + k + " has the most child with " + a[k] + " child");
                         }
                     }
 
