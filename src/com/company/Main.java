@@ -176,6 +176,11 @@ public class Main {
                             idfinder = scanner12.nextInt();
                             System.out.println(amooFinder(idfinder));
                             break;
+                        case 4:
+                            System.out.println("amme finder, insert id: ");
+                            idfinder=scanner12.nextInt();
+                            System.out.println(ammeFinder(idfinder));
+                            break;
                         default:
                             System.out.println("not in the list");
                     }
@@ -278,6 +283,9 @@ public class Main {
         return sonFinder(fatherFinder(fatherFinder(id)),id);
 
     }
+    public static String ammeFinder(int id){
+        return girlFinder(fatherFinder(fatherFinder(id)),id);
+    }
 
     public static String sonFinder(int id,int node) {
         String sons="ids:";
@@ -288,6 +296,16 @@ public class Main {
                 sons=sons+" "+son.getFromId();
         }
          return sons;
+    }
+    public static String girlFinder(int id,int node) {
+        String girls="ids:";
+        int counter=0;
+        for (Edges girl : edgesArrayList) {
+            if (girl.getToId() == id && girl.getRelation()==1 )
+                if (girl.getFromId()!=fatherFinder(node) && personArrayList.get(girl.getFromId()-1).isSex()==false)
+                    girls=girls+" "+girl.getFromId();
+        }
+        return girls;
     }
 
 }
