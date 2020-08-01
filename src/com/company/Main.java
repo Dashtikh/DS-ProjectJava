@@ -1,5 +1,7 @@
 package com.company;
 
+import com.sun.deploy.security.SelectableSecurityManager;
+import com.sun.javafx.geom.Edge;
 import oracle.jdbc.proxy.annotation.Pre;
 
 import java.sql.*;
@@ -95,7 +97,7 @@ public class Main {
                     System.out.println("insert the death date");
                     dDate = scanner6.nextInt();
                     preparedStatement.setLong(6, dDate);
-                    System.out.println("insert the spouse id");
+                    System.out.println("insert the wife id");
                     spouseId = scanner7.nextInt();
                     preparedStatement.setLong(7, spouseId);
                     preparedStatement.executeUpdate();
@@ -154,14 +156,25 @@ public class Main {
                     break;
                 case 6:
                     Scanner scanner11 = new Scanner(System.in);
-                    System.out.println("choose the relation that you wanna find id : 1-father");
+                    System.out.println("choose the relation that you wanna find id : 1-father 2-mother");
                     finder = scanner11.nextInt();
+                    Scanner scanner12 = new Scanner(System.in);
                     switch (finder) {
                         case 1:
-                            Scanner scanner12 = new Scanner(System.in);
+
                             System.out.println("father finder, insert id: ");
-                            idfinder=scanner12.nextInt();
+                            idfinder = scanner12.nextInt();
                             System.out.println(fatherFinder(idfinder));
+                            break;
+                        case 2:
+                            System.out.println("mother finder, insert id: ");
+                            idfinder = scanner12.nextInt();
+                            System.out.println(motherFinder(idfinder));
+                            break;
+                        case 3:
+                            System.out.println("amoo finder, insert id: ");
+                            idfinder = scanner12.nextInt();
+                            System.out.println(amooFinder(idfinder));
                             break;
                         default:
                             System.out.println("not in the list");
@@ -211,7 +224,7 @@ public class Main {
     public static void printEdgeList() {
         for (Edges print : edgesArrayList) {
             if (print.getRelation() == 2) {
-                System.out.println(print.getToId() + " is wife of" + print.getFromId());
+                System.out.println(print.getFromId() + " is wife of" + print.getToId());
             }
             if (print.getRelation() == 1) {
                 System.out.println(print.getFromId() + " is son of" + print.getToId());
@@ -251,6 +264,30 @@ public class Main {
         }
 
         return 0;
+    }
+
+    public static int motherFinder(int id) {
+        for (Edges mother : edgesArrayList) {
+            if (mother.getToId() == fatherFinder(id) && mother.getRelation() == 2)
+                return mother.getFromId();
+        }
+        return 0;
+    }
+
+    public static String amooFinder(int id) {
+        return sonFinder(fatherFinder(fatherFinder(id)),id);
+
+    }
+
+    public static String sonFinder(int id,int node) {
+        String sons="ids:";
+        int counter=0;
+        for (Edges son : edgesArrayList) {
+            if (son.getToId() == id && son.getRelation()==1 )
+                if (son.getFromId()!=fatherFinder(node))
+                sons=sons+" "+son.getFromId();
+        }
+         return sons;
     }
 
 }
