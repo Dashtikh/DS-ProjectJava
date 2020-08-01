@@ -21,7 +21,7 @@ public class Main {
         int spouseId;
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("insert menu item: 1 add person , 2 print persons , 3 set relation , 4 print relation");
+            System.out.println("insert menu item: 1 add person , 2 print persons , 3 set relation , 4 print relation , 5 the most children");
             menu = scanner.nextInt();
             switch (menu) {
                 case 1:
@@ -72,15 +72,27 @@ public class Main {
                     break;
                 case 5:
                     System.out.println("search for child numbers");
-                    int[] a= new int[id+1];
-                    int[] b= new int[id+1];
-                    int swap;
+                    int[] a = new int[id + 1];
+                    int[] b = new int[id + 1];
+                    int swap, j,k;
 
                     for (int i = 1; i <= id; i++) {
-
-                        System.out.println("id " + i + " has " + searchForChildren(i) + " child");
-
+                        a[i] = searchForChildren(i);
+                        b[i] = searchForChildren(i);
                     }
+                    for (j = 1; j < id; j++) {
+                        if (b[j] > b[j + 1]) {
+                            swap = b[j + 1];
+                            b[j + 1] = b[j];
+                            b[j] = swap;
+                        }
+                    }
+                    for (k=1;k<=id;k++){
+                        if (a[k]==b[id]){
+                            System.out.println("id "+k+" has the most child with "+a[k]+" child");
+                        }
+                    }
+
                     break;
 
 
@@ -97,7 +109,7 @@ public class Main {
         for (Edges edges : edgesArrayList) {
             if (edges.getToId() == id && edges.getRelation() == 1) {
                 counter++;
-                counter=counter+searchForChildren(edges.getFromId());
+                counter = counter + searchForChildren(edges.getFromId());
             }
 
         }
