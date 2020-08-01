@@ -21,15 +21,15 @@ public class Main {
 
         Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
         Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
-        Connection connection1 =DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
-        Connection conn1 =DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
+        Connection connection1 = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
+        Connection conn1 = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "Dashtikh", "dashti1565");
         PreparedStatement preparedStatement = connection.prepareStatement("insert into person (Id , fname , lName , SEX , bDate , dDate , spouseId) values (?,?,?,?,?,?,?)");
         PreparedStatement preparedStatement1 = connection1.prepareStatement("insert into Edges (fromid , toid , relation) values (?,?,?)");
-        Statement statement= conn.createStatement();
+        Statement statement = conn.createStatement();
         Statement statement1 = conn1.createStatement();
 
         int menu;
-        int id = 0, id1 = 0, id2 = 0, relation = 0,id3=0;
+        int id = 0, id1 = 0, id2 = 0, relation = 0, id3 = 0, finder = 0, idfinder = 0;
         String fName;
         String lName;
         boolean sex;
@@ -55,11 +55,11 @@ public class Main {
             adder(id, fName, lName, sex, bDate, dDate, spouseId);
         }
         resultSet.close();
-        while (resultSet1.next()){
-            id1=resultSet1.getInt("FROMID");
-            id2=resultSet1.getInt("TOID");
-            relation=resultSet1.getInt("RELATION");
-            relation(id1,id2,relation);
+        while (resultSet1.next()) {
+            id1 = resultSet1.getInt("FROMID");
+            id2 = resultSet1.getInt("TOID");
+            relation = resultSet1.getInt("RELATION");
+            relation(id1, id2, relation);
 
         }
         resultSet1.close();
@@ -116,11 +116,11 @@ public class Main {
                     Scanner scanner9 = new Scanner(System.in);
                     Scanner scanner10 = new Scanner(System.in);
                     id1 = scanner8.nextInt();
-                    preparedStatement1.setLong(1,id1);
+                    preparedStatement1.setLong(1, id1);
                     id2 = scanner9.nextInt();
-                    preparedStatement1.setLong(2,id2);
+                    preparedStatement1.setLong(2, id2);
                     relation = scanner10.nextInt();
-                    preparedStatement1.setLong(3,relation);
+                    preparedStatement1.setLong(3, relation);
 
                     relation(id1, id2, relation);
                     preparedStatement1.executeUpdate();
@@ -149,6 +149,22 @@ public class Main {
                         if (a[k] == b[id]) {
                             System.out.println("id " + k + " has the most child with " + a[k] + " child");
                         }
+                    }
+
+                    break;
+                case 6:
+                    Scanner scanner11 = new Scanner(System.in);
+                    System.out.println("choose the relation that you wanna find id : 1-father");
+                    finder = scanner11.nextInt();
+                    switch (finder) {
+                        case 1:
+                            Scanner scanner12 = new Scanner(System.in);
+                            System.out.println("father finder, insert id: ");
+                            idfinder=scanner12.nextInt();
+                            System.out.println(fatherFinder(idfinder));
+                            break;
+                        default:
+                            System.out.println("not in the list");
                     }
 
                     break;
@@ -226,4 +242,15 @@ public class Main {
         edgesArrayList.add(e);
 
     }
+
+    public static int fatherFinder(int id) {
+        for (Edges father : edgesArrayList) {
+            if (father.getFromId() == id && father.getRelation() == 1)
+                return father.getToId();
+
+        }
+
+        return 0;
+    }
+
 }
