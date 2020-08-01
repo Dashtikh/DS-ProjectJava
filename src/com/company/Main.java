@@ -284,7 +284,7 @@ public class Main {
         int counter=0;
         for (Edges son : edgesArrayList) {
             if (son.getToId() == id && son.getRelation()==1 )
-                if (son.getFromId()!=fatherFinder(node))
+                if (son.getFromId()!=fatherFinder(node) && personArrayList.get(son.getFromId()-1).isSex()==true)
                 sons=sons+" "+son.getFromId();
         }
          return sons;
