@@ -3,6 +3,8 @@ package com.company;
 import com.sun.deploy.security.SelectableSecurityManager;
 import com.sun.javafx.geom.Edge;
 import oracle.jdbc.proxy.annotation.Pre;
+import org.omg.CORBA.INTERNAL;
+import org.omg.CORBA.WStringSeqHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -156,7 +158,7 @@ public class Main {
                     break;
                 case 6:
                     Scanner scanner11 = new Scanner(System.in);
-                    System.out.println("choose the relation that you wanna find id : 1-father 2-mother 3-amoo 4-amme");
+                    System.out.println("choose the relation that you wanna find id : 1-father 2-mother 3-amoo 4-amme 5-brother 6-sister 7-daee 8-khale 9-bajenaq 10-jari 11-havoo");
                     finder = scanner11.nextInt();
                     Scanner scanner12 = new Scanner(System.in);
                     switch (finder) {
@@ -175,18 +177,69 @@ public class Main {
                             System.out.println("amoo finder, insert id: ");
                             idfinder = scanner12.nextInt();
                             for (int i = 0; i < 10; i++) {
-                                if (amooFinder(idfinder)[i]!=0)
-                                System.out.println(amooFinder(idfinder)[i]);
+                                if (amooFinder(idfinder)[i] != 0)
+                                    System.out.println(amooFinder(idfinder)[i]);
                             }
                             break;
                         case 4:
                             System.out.println("amme finder, insert id: ");
                             idfinder = scanner12.nextInt();
                             for (int i = 0; i < 10; i++) {
-                                if (ammeFinder(idfinder)[i]!=0)
+                                if (ammeFinder(idfinder)[i] != 0)
                                     System.out.println(ammeFinder(idfinder)[i]);
                             }
                             break;
+                        case 5:
+                            System.out.println("Brother finder, insert id: ");
+                            idfinder = scanner12.nextInt();
+                            for (int i = 0; i < 10; i++) {
+                                if (brotherFinder(idfinder)[i] != 0)
+                                    System.out.println(brotherFinder(idfinder)[i]);
+                            }
+                            break;
+                        case 6:
+                            System.out.println("Sister finder, insert id: ");
+                            idfinder = scanner12.nextInt();
+                            for (int i = 0; i < 10; i++) {
+                                if (sisterFinder(idfinder)[i] != 0)
+                                    System.out.println(sisterFinder(idfinder)[i]);
+                            }
+
+                            break;
+                        case 7:
+                            System.out.println("Daee finder, insert id: ");
+                            idfinder = scanner12.nextInt();
+                            for (int i = 0; i < 10; i++) {
+                                if (daeeFinder(idfinder)[i] != 0)
+                                    System.out.println(daeeFinder(idfinder)[i]);
+                            }
+                            break;
+                        case 8:
+                            System.out.println("Khale finder, insert id: ");
+                            idfinder = scanner12.nextInt();
+                            for (int i = 0; i < 10; i++) {
+                                if (khaleFinder(idfinder)[i] != 0)
+                                    System.out.println(khaleFinder(idfinder)[i]);
+                            }
+
+                            break;
+                        case 9:
+                            System.out.println("Bajenaq finder, insert id: ");
+                            idfinder = scanner12.nextInt();
+                            System.out.println(bajenaqFinder(idfinder));
+                            break;
+                        case 10:
+                            System.out.println("jari finder, insert id: ");
+                            idfinder = scanner12.nextInt();
+                            System.out.println(jari(idfinder));
+                            break;
+                        case 11:
+                            System.out.println("havoo finder, insert id: ");
+                            idfinder = scanner12.nextInt();
+                            System.out.println(havoo(idfinder));
+
+                            break;
+
                         default:
                             System.out.println("not in the list");
                     }
@@ -285,6 +338,22 @@ public class Main {
         return 0;
     }
 
+    public static int shoharFinder(int id) {
+        for (Edges shohar : edgesArrayList) {
+            if (shohar.getFromId() == id && shohar.getRelation() == 2)
+                return shohar.getToId();
+        }
+        return 0;
+    }
+
+    public static int zanFinder(int id) {
+        for (Edges shohar : edgesArrayList) {
+            if (shohar.getToId() == id && shohar.getRelation() == 2)
+                return shohar.getFromId();
+        }
+        return 0;
+    }
+
 
     public static int[] amooFinder(int id) {
         return sonFinder(fatherFinder(fatherFinder(id)), id);
@@ -300,7 +369,37 @@ public class Main {
         int counter = 0;
         for (Edges son : edgesArrayList) {
             if (son.getToId() == id && son.getRelation() == 1)
-                if (son.getFromId() != fatherFinder(node) && personArrayList.get(son.getFromId() - 1).isSex() == true){
+                if (son.getFromId() != fatherFinder(node) && personArrayList.get(son.getFromId() - 1).isSex() == true) {
+                    a[counter] = son.getFromId();
+                    counter++;
+                }
+
+        }
+        return a;
+
+    }
+
+    public static int[] sonFinder1(int id, int node) {
+        int[] a = new int[10];
+        int counter = 0;
+        for (Edges son : edgesArrayList) {
+            if (son.getToId() == id && son.getRelation() == 1)
+                if (son.getFromId() != node && personArrayList.get(son.getFromId() - 1).isSex() == true) {
+                    a[counter] = son.getFromId();
+                    counter++;
+                }
+
+        }
+        return a;
+
+    }
+
+    public static int[] sonFinder2(int id, int node) {
+        int[] a = new int[10];
+        int counter = 0;
+        for (Edges son : edgesArrayList) {
+            if (son.getToId() == id && son.getRelation() == 1)
+                if (son.getFromId() != motherFinder(node) && personArrayList.get(son.getFromId() - 1).isSex() == true) {
                     a[counter] = son.getFromId();
                     counter++;
                 }
@@ -315,7 +414,7 @@ public class Main {
         int counter = 0;
         for (Edges daughter : edgesArrayList) {
             if (daughter.getToId() == id && daughter.getRelation() == 1)
-                if (daughter.getFromId() != fatherFinder(node) && personArrayList.get(daughter.getFromId() - 1).isSex() == false){
+                if (daughter.getFromId() != fatherFinder(node) && personArrayList.get(daughter.getFromId() - 1).isSex() == false) {
                     a[counter] = daughter.getFromId();
                     counter++;
                 }
@@ -323,5 +422,76 @@ public class Main {
         return a;
 
     }
+
+    public static int[] daughterFinder1(int id, int node) {
+        int[] a = new int[10];
+        int counter = 0;
+        for (Edges daughter : edgesArrayList) {
+            if (daughter.getToId() == id && daughter.getRelation() == 1)
+                if (daughter.getFromId() != node && personArrayList.get(daughter.getFromId() - 1).isSex() == false) {
+                    a[counter] = daughter.getFromId();
+                    counter++;
+                }
+        }
+        return a;
+
+    }
+
+    public static int[] daughterFinder2(int id, int node) {
+        int[] a = new int[10];
+        int counter = 0;
+        for (Edges daughter : edgesArrayList) {
+            if (daughter.getToId() == id && daughter.getRelation() == 1)
+                if (daughter.getFromId() != motherFinder(node) && personArrayList.get(daughter.getFromId() - 1).isSex() == false) {
+                    a[counter] = daughter.getFromId();
+                    counter++;
+                }
+        }
+        return a;
+
+    }
+
+    public static int[] brotherFinder(int id) {
+        return sonFinder1(fatherFinder(id), id);
+    }
+
+    public static int[] sisterFinder(int id) {
+        return daughterFinder1(fatherFinder(id), id);
+    }
+
+    public static int[] daeeFinder(int id) {
+        return sonFinder2(fatherFinder(motherFinder(id)), id);
+    }
+
+    public static int[] khaleFinder(int id) {
+        return daughterFinder2(fatherFinder(motherFinder(id)), id);
+    }
+
+    public static String bajenaqFinder(int id) {
+        String baj = "ids: ";
+        for (int i = 0; i < 10; i++) {
+            if (shoharFinder(daughterFinder2(fatherFinder(zanFinder(id)), id)[i]) != id && shoharFinder(daughterFinder2(fatherFinder(zanFinder(id)), id)[i]) != 0)
+                baj = baj + " " + String.valueOf(shoharFinder(daughterFinder2(fatherFinder(zanFinder(id)), id)[i]));
+        }
+        return baj;
+    }
+
+    public static String jari(int id) {
+        String jari = "ids: ";
+        for (int i = 0; i < 10; i++) {
+            if (zanFinder(sonFinder(fatherFinder(shoharFinder(id)), id)[i]) != id && zanFinder(sonFinder(fatherFinder(shoharFinder(id)), id)[i]) != 0)
+                jari = jari + " " + String.valueOf(zanFinder(sonFinder(fatherFinder(shoharFinder(id)), id)[i]));
+        }
+        return jari;
+    }
+    public static String havoo(int id){
+        String havoo="ids: ";
+        for (Edges hav :edgesArrayList){
+            if (shoharFinder(id)==hav.getToId()&&hav.getFromId()!=id && hav.getRelation()==2)
+                havoo=havoo+""+String.valueOf(hav.getFromId());
+        }
+        return havoo;
+    }
+
 
 }
