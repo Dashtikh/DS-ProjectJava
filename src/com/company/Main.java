@@ -2,18 +2,21 @@ package com.company;
 
 import com.sun.deploy.security.SelectableSecurityManager;
 import com.sun.javafx.geom.Edge;
+import jdk.internal.dynalink.beans.StaticClass;
 import oracle.jdbc.proxy.annotation.Pre;
 import org.omg.CORBA.INTERNAL;
 import org.omg.CORBA.WStringSeqHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
     static Person person = new Person();
     static ArrayList<Person> personArrayList = new ArrayList<Person>();
     static ArrayList<Edges> edgesArrayList = new ArrayList<Edges>();
+    static ArrayList<Integer> route = new ArrayList<Integer>();
 
 
     public static void main(String[] args) throws SQLException {
@@ -67,8 +70,22 @@ public class Main {
 
         }
         resultSet1.close();
+        int v = id3 + 1;
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<ArrayList<Integer>>(v);
+        for (int i = 1; i <= v; i++) {
+            adj.add(new ArrayList<Integer>());
+        }
+        int counter = 0;
+        for (Edges etesal : edgesArrayList) {
+            addEdge(adj, etesal.getFromId(), etesal.getToId());
+            counter++;
+            if (counter == v - 1)
+                break;
+        }
+
+
         while (true) {
-            System.out.println("insert menu item: 1 add person , 2 print persons , 3 set relation , 4 print relation , 5 the most children , 6 finding by relation ");
+            System.out.println("insert menu item: 1 add person , 2 print persons , 3 set relation , 4 print relation , 5 the most children , 6 finding by relation , 7 relation between two id ");
             menu = scanner.nextInt();
             switch (menu) {
                 case 1:
@@ -115,7 +132,7 @@ public class Main {
                     break;
                 case 3:
                     //set relation
-                    System.out.println("set father-son relation ( 1=p1 is child of p2)");
+                    System.out.println("set father-child relation ( 1=p1 is child of p2)");
                     Scanner scanner8 = new Scanner(System.in);
                     Scanner scanner9 = new Scanner(System.in);
                     Scanner scanner10 = new Scanner(System.in);
@@ -246,7 +263,21 @@ public class Main {
 
                     break;
 
+                case 7:
+                    System.out.println("relation between two id, insert id1 and id2: ");
+                    Scanner scanner13 = new Scanner(System.in);
+                    Scanner scanner14 = new Scanner(System.in);
+                    int i = scanner13.nextInt(), l = scanner14.nextInt();
+                    for (int y = 0; y < v; y++) {
+                        if (printShortestDistance(adj, i, l, v)[y] != 0)
+                            route.add(printShortestDistance(adj, i, l, v)[y]);
+                    }
+                    for (int x = 0; x < route.size(); x++)
+                        System.out.print(route.get(x)+" ");
+                    System.out.println();
 
+
+                    break;
                 default:
                     System.out.println("not in the list");
             }
@@ -484,13 +515,96 @@ public class Main {
         }
         return jari;
     }
-    public static String havoo(int id){
-        String havoo="ids: ";
-        for (Edges hav :edgesArrayList){
-            if (shoharFinder(id)==hav.getToId()&&hav.getFromId()!=id && hav.getRelation()==2)
-                havoo=havoo+""+String.valueOf(hav.getFromId());
+
+    public static String havoo(int id) {
+        String havoo = "ids: ";
+        for (Edges hav : edgesArrayList) {
+            if (shoharFinder(id) == hav.getToId() && hav.getFromId() != id && hav.getRelation() == 2)
+                havoo = havoo + "" + String.valueOf(hav.getFromId());
         }
         return havoo;
+    }
+
+    private static void addEdge(ArrayList<ArrayList<Integer>> adj, int i, int j) {
+        adj.get(i).add(j);
+        adj.get(j).add(i);
+    }
+
+    private static int[] printShortestDistance(
+            ArrayList<ArrayList<Integer>> adj,
+            int s, int dest, int v) {
+        int[] a = new int[v];
+        int[] b = new int[v];
+        // from s
+        int pred[] = new int[v];
+        int dist[] = new int[v];
+
+        if (BFS(adj, s, dest, v, pred, dist) == false) {
+            System.out.println("Given source and destination" + "are not connected");
+            return b;
+        }
+
+        LinkedList<Integer> path = new LinkedList<Integer>();
+        int crawl = dest;
+        path.add(crawl);
+        while (pred[crawl] != -1) {
+            path.add(pred[crawl]);
+            crawl = pred[crawl];
+        }
+
+        //System.out.println("Shortest path length is: " + dist[dest]);
+
+        //System.out.print("Path is: ");
+        for (int i = path.size() - 1; i >= 0; i--) {
+            //System.out.print(path.get(i) + " ");
+            a[path.size() + 1 - i] = path.get(i);
+        }
+        return a;
+    }
+
+    private static boolean BFS(ArrayList<ArrayList<Integer>> adj, int src,
+                               int dest, int v, int pred[], int dist[]) {
+
+        LinkedList<Integer> queue = new LinkedList<Integer>();
+
+        boolean visited[] = new boolean[v];
+
+        for (int i = 0; i < v; i++) {
+            visited[i] = false;
+            dist[i] = Integer.MAX_VALUE;
+            pred[i] = -1;
+        }
+
+        visited[src] = true;
+        dist[src] = 0;
+        queue.add(src);
+        // bfs Algorithm
+        while (!queue.isEmpty()) {
+            int u = queue.remove();
+            for (int i = 0; i < adj.get(u).size(); i++) {
+                if (visited[adj.get(u).get(i)] == false) {
+                    visited[adj.get(u).get(i)] = true;
+                    dist[adj.get(u).get(i)] = dist[u] + 1;
+                    pred[adj.get(u).get(i)] = u;
+                    queue.add(adj.get(u).get(i));
+
+                    if (adj.get(u).get(i) == dest)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static String relationBetween(ArrayList<Integer> route) {
+        String relation ="";
+        for (int i=route.size()-1;i>0;i--){
+            if (fatherFinder(route.get(0))==route.get(i))
+                relation=relation+"father" ;
+            else if (fatherFinder(fatherFinder(route.get(0)))==route.get(i))
+                relation=relation+"grandfather";
+        }
+        return relation;
     }
 
 
