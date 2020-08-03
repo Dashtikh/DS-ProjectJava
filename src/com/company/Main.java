@@ -174,12 +174,18 @@ public class Main {
                         case 3:
                             System.out.println("amoo finder, insert id: ");
                             idfinder = scanner12.nextInt();
-                            System.out.println(amooFinder(idfinder));
+                            for (int i = 0; i < 10; i++) {
+                                if (amooFinder(idfinder)[i]!=0)
+                                System.out.println(amooFinder(idfinder)[i]);
+                            }
                             break;
                         case 4:
                             System.out.println("amme finder, insert id: ");
-                            idfinder=scanner12.nextInt();
-                            System.out.println(ammeFinder(idfinder));
+                            idfinder = scanner12.nextInt();
+                            for (int i = 0; i < 10; i++) {
+                                if (ammeFinder(idfinder)[i]!=0)
+                                    System.out.println(ammeFinder(idfinder)[i]);
+                            }
                             break;
                         default:
                             System.out.println("not in the list");
@@ -279,33 +285,43 @@ public class Main {
         return 0;
     }
 
-    public static String amooFinder(int id) {
-        return sonFinder(fatherFinder(fatherFinder(id)),id);
 
-    }
-    public static String ammeFinder(int id){
-        return girlFinder(fatherFinder(fatherFinder(id)),id);
+    public static int[] amooFinder(int id) {
+        return sonFinder(fatherFinder(fatherFinder(id)), id);
     }
 
-    public static String sonFinder(int id,int node) {
-        String sons="ids:";
-        int counter=0;
+    public static int[] ammeFinder(int id) {
+        return daughterFinder(fatherFinder(fatherFinder(id)), id);
+    }
+
+
+    public static int[] sonFinder(int id, int node) {
+        int[] a = new int[10];
+        int counter = 0;
         for (Edges son : edgesArrayList) {
-            if (son.getToId() == id && son.getRelation()==1 )
-                if (son.getFromId()!=fatherFinder(node) && personArrayList.get(son.getFromId()-1).isSex()==true)
-                sons=sons+" "+son.getFromId();
+            if (son.getToId() == id && son.getRelation() == 1)
+                if (son.getFromId() != fatherFinder(node) && personArrayList.get(son.getFromId() - 1).isSex() == true){
+                    a[counter] = son.getFromId();
+                    counter++;
+                }
+
         }
-         return sons;
+        return a;
+
     }
-    public static String girlFinder(int id,int node) {
-        String girls="ids:";
-        int counter=0;
-        for (Edges girl : edgesArrayList) {
-            if (girl.getToId() == id && girl.getRelation()==1 )
-                if (girl.getFromId()!=fatherFinder(node) && personArrayList.get(girl.getFromId()-1).isSex()==false)
-                    girls=girls+" "+girl.getFromId();
+
+    public static int[] daughterFinder(int id, int node) {
+        int[] a = new int[10];
+        int counter = 0;
+        for (Edges daughter : edgesArrayList) {
+            if (daughter.getToId() == id && daughter.getRelation() == 1)
+                if (daughter.getFromId() != fatherFinder(node) && personArrayList.get(daughter.getFromId() - 1).isSex() == false){
+                    a[counter] = daughter.getFromId();
+                    counter++;
+                }
         }
-        return girls;
+        return a;
+
     }
 
 }
