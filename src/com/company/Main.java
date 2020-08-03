@@ -243,17 +243,26 @@ public class Main {
                         case 9:
                             System.out.println("Bajenaq finder, insert id: ");
                             idfinder = scanner12.nextInt();
-                            System.out.println(bajenaqFinder(idfinder));
+                            for (int i = 0; i < 10; i++) {
+                                if (bajenaqFinder(idfinder)[i] != 0)
+                                    System.out.println(bajenaqFinder(idfinder)[i]);
+                            }
                             break;
                         case 10:
                             System.out.println("jari finder, insert id: ");
                             idfinder = scanner12.nextInt();
-                            System.out.println(jari(idfinder));
+                            for (int i = 0; i < 10; i++) {
+                                if (jari(idfinder)[i] != 0)
+                                    System.out.println(jari(idfinder)[i]);
+                            }
                             break;
                         case 11:
                             System.out.println("havoo finder, insert id: ");
                             idfinder = scanner12.nextInt();
-                            System.out.println(havoo(idfinder));
+                            for (int i = 0; i < 10; i++) {
+                                if (havoo(idfinder)[i] != 0)
+                                    System.out.println(havoo(idfinder)[i]);
+                            }
 
                             break;
 
@@ -273,8 +282,9 @@ public class Main {
                             route.add(printShortestDistance(adj, i, l, v)[y]);
                     }
                     for (int x = 0; x < route.size(); x++)
-                        System.out.print(route.get(x)+" ");
+                        System.out.print(route.get(x) + " ");
                     System.out.println();
+                    System.out.println(l + " is " + relationBetween(route) + " of " + i);
 
 
                     break;
@@ -440,6 +450,21 @@ public class Main {
 
     }
 
+    public static int[] sonFinder3(int id) {
+        int[] a = new int[10];
+        int counter = 0;
+        for (Edges son : edgesArrayList) {
+            if (son.getToId() == id && son.getRelation() == 1)
+                if (personArrayList.get(son.getFromId() - 1).isSex() == true) {
+                    a[counter] = son.getFromId();
+                    counter++;
+                }
+
+        }
+        return a;
+
+    }
+
     public static int[] daughterFinder(int id, int node) {
         int[] a = new int[10];
         int counter = 0;
@@ -482,6 +507,20 @@ public class Main {
 
     }
 
+    public static int[] daughterFinder3(int id) {
+        int[] a = new int[10];
+        int counter = 0;
+        for (Edges daughter : edgesArrayList) {
+            if (daughter.getToId() == id && daughter.getRelation() == 1)
+                if (personArrayList.get(daughter.getFromId() - 1).isSex() == false) {
+                    a[counter] = daughter.getFromId();
+                    counter++;
+                }
+        }
+        return a;
+
+    }
+
     public static int[] brotherFinder(int id) {
         return sonFinder1(fatherFinder(id), id);
     }
@@ -498,31 +537,38 @@ public class Main {
         return daughterFinder2(fatherFinder(motherFinder(id)), id);
     }
 
-    public static String bajenaqFinder(int id) {
-        String baj = "ids: ";
+    public static int[] bajenaqFinder(int id) {
+        int[] a = new int[10];
+        int counter = 0;
         for (int i = 0; i < 10; i++) {
-            if (shoharFinder(daughterFinder2(fatherFinder(zanFinder(id)), id)[i]) != id && shoharFinder(daughterFinder2(fatherFinder(zanFinder(id)), id)[i]) != 0)
-                baj = baj + " " + String.valueOf(shoharFinder(daughterFinder2(fatherFinder(zanFinder(id)), id)[i]));
+            if (shoharFinder(daughterFinder2(fatherFinder(zanFinder(id)), id)[i]) != id && shoharFinder(daughterFinder2(fatherFinder(zanFinder(id)), id)[i]) != 0) {
+                a[counter] = shoharFinder(daughterFinder2(fatherFinder(zanFinder(id)), id)[i]);
+                counter++;
+            }
         }
-        return baj;
+        return a;
     }
 
-    public static String jari(int id) {
-        String jari = "ids: ";
+    public static int[] jari(int id) {
+        int[] a = new int[10];
+        int counter = 0;
         for (int i = 0; i < 10; i++) {
-            if (zanFinder(sonFinder(fatherFinder(shoharFinder(id)), id)[i]) != id && zanFinder(sonFinder(fatherFinder(shoharFinder(id)), id)[i]) != 0)
-                jari = jari + " " + String.valueOf(zanFinder(sonFinder(fatherFinder(shoharFinder(id)), id)[i]));
+            if (zanFinder(sonFinder(fatherFinder(shoharFinder(id)), id)[i]) != id && zanFinder(sonFinder(fatherFinder(shoharFinder(id)), id)[i]) != 0){
+                a[counter] = zanFinder(sonFinder(fatherFinder(shoharFinder(id)), id)[i]);}
         }
-        return jari;
+        return a;
     }
 
-    public static String havoo(int id) {
-        String havoo = "ids: ";
+    public static int[] havoo(int id) {
+        int[] a = new int[10];
+        int counter = 0;
         for (Edges hav : edgesArrayList) {
-            if (shoharFinder(id) == hav.getToId() && hav.getFromId() != id && hav.getRelation() == 2)
-                havoo = havoo + "" + String.valueOf(hav.getFromId());
+            if (shoharFinder(id) == hav.getToId() && hav.getFromId() != id && hav.getRelation() == 2) {
+                a[counter] = hav.getFromId();
+                counter++;
+            }
         }
-        return havoo;
+        return a;
     }
 
     private static void addEdge(ArrayList<ArrayList<Integer>> adj, int i, int j) {
@@ -597,12 +643,88 @@ public class Main {
     }
 
     public static String relationBetween(ArrayList<Integer> route) {
-        String relation ="";
-        for (int i=route.size()-1;i>0;i--){
-            if (fatherFinder(route.get(0))==route.get(i))
-                relation=relation+"father" ;
-            else if (fatherFinder(fatherFinder(route.get(0)))==route.get(i))
-                relation=relation+"grandfather";
+        String relation = "";
+        for (int i = route.size() - 1; i > 0; i--) {
+            if (fatherFinder(route.get(0)) == route.get(i))
+                return relation = relation + "pedar";
+            else if (fatherFinder(fatherFinder(route.get(0))) == route.get(i))
+                return relation = relation + "grandfather";
+            else if (motherFinder(route.get(0)) == route.get(i))
+                return relation = relation + "madar";
+            else if (fatherFinder(motherFinder(route.get(0))) == route.get(i))
+                return relation = relation + "grandfather";
+            else if (motherFinder(fatherFinder(route.get(0))) == route.get(i))
+                return relation = relation + "grandmother";
+            else if (motherFinder(motherFinder(route.get(0))) == route.get(i))
+                return relation = relation + "grandmother";
+            for (int j = 0; j < 10; j++) {
+                if (daeeFinder(route.get(0))[j] == route.get(i))
+                    return relation = relation + "daee";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (brotherFinder(route.get(0))[j] == route.get(i))
+                    return relation = relation + "baradar";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (sisterFinder(route.get(0))[j] == route.get(i))
+                    return relation = relation + "khahar";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (khaleFinder(route.get(0))[j] == route.get(i))
+                    return relation = relation + "khale";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (amooFinder(route.get(0))[j] == route.get(i))
+                    return relation = relation + "amoo";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (ammeFinder(route.get(0))[j] == route.get(i))
+                    return relation = relation + "amme";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (sonFinder3(route.get(0))[j] == route.get(i))
+                    return relation = relation + "pesar";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (daughterFinder3(route.get(0))[j] == route.get(i))
+                    return relation = relation + "dokhtar";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (bajenaqFinder(route.get(0))[j] == route.get(i))
+                    return relation = relation + "bajenaq ";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (jari(route.get(0))[j] == route.get(i))
+                    return relation = relation + "jari ";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (brotherFinder(route.get(i - 1))[j] == route.get(i))
+                    relation = relation + "baradar ";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (sisterFinder(route.get(i - 1))[j] == route.get(i))
+                    relation = relation + "khahar ";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (sonFinder3(route.get(i - 1))[j] == route.get(i))
+                    relation = relation + "peasr ";
+            }
+            for (int j = 0; j < 10; j++) {
+                if (daughterFinder3(route.get(i - 1))[j] == route.get(i))
+                    relation = relation + "dokhtar ";
+            }
+
+            if (shoharFinder(route.get(i - 1)) == route.get(i))
+                relation = relation + "shohar ";
+
+            if (fatherFinder(route.get(i - 1)) == route.get(i))
+                relation = relation + "pedar ";
+            if (zanFinder(route.get(i - 1)) == route.get(i))
+                relation = relation + "zan ";
+
+
+
+
         }
         return relation;
     }
