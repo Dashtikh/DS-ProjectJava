@@ -171,6 +171,9 @@ public class Main {
                             System.out.println("id " + k + " has the most child with " + a[k] + " children");
                         }
                     }
+                    for (k = 1; k <= id3; k++) {
+                        System.out.println("id "+k+" has "+ a[k]+" children" );
+                    }
 
                     break;
                 case 6:
