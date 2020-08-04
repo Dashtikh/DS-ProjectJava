@@ -299,9 +299,13 @@ public class Main {
     public static int searchForChildren(int id) {
         int counter = 0;
         for (Edges edges : edgesArrayList) {
+            //farzandan pesar
             if (edges.getToId() == id && edges.getRelation() == 1) {
                 counter++;
                 counter = counter + searchForChildren(edges.getFromId());
+            }
+            if (edges.getFromId()==id && edges.getRelation()==2){
+                counter=counter+searchForChildren(edges.getToId());
             }
 
         }
@@ -721,6 +725,7 @@ public class Main {
                 relation = relation + "pedar ";
             if (zanFinder(route.get(i - 1)) == route.get(i))
                 relation = relation + "zan ";
+
 
 
 
